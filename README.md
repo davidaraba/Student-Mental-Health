@@ -34,14 +34,14 @@ This project demonstrates how **big data technologies** can transform reactive m
 ### System Design
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Data Sources  │    │  Apache Spark   │    │  ML Pipeline    │
-│                 │    │                 │    │                 │
-│ • Student Info  │───▶│ • Data Ingestion│───▶│ • Classification│
-│ • Academic Data │    │ • Preprocessing │    │ • Regression    │
-│ • Lifestyle     │    │ • Feature Eng.  │    │ • Clustering    │
-│ • Mental Health │    │ • ML Training   │    │ • Association   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Data Sources  │    │  Cloud Storage  │    │  Apache Spark   │    │  ML Pipeline    │
+│                 │    │                 │    │                 │    │                 │
+│ • Student Info  │───▶│ • Google Cloud  │───▶│ • Data Ingestion│───▶│ • Classification│
+│ • Academic Data │    │ • Storage (GCS) │    │ • Preprocessing │    │ • Regression    │
+│ • Lifestyle     │    │ • Local Files   │    │ • Feature Eng.  │    │ • Clustering    │
+│ • Mental Health │    │ • Hybrid Mode   │    │ • ML Training   │    │ • Association   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ### Technology Stack
@@ -49,6 +49,7 @@ This project demonstrates how **big data technologies** can transform reactive m
 - **Core Engine**: Apache Spark 4.0.1 with PySpark
 - **Machine Learning**: Spark MLlib (Logistic Regression, Linear Regression, K-Means, FPGrowth)
 - **Data Processing**: Distributed computing for 27K+ student records
+- **Cloud Storage**: Google Cloud Storage (GCS) for scalable data storage and access
 - **Visualization**: Matplotlib, Seaborn for comprehensive data insights
 - **Languages**: Python 3.x with advanced data science libraries
 
@@ -163,20 +164,115 @@ source smh_env/bin/activate  # On Windows: smh_env\Scripts\activate
 # Install dependencies
 pip install pyspark pandas matplotlib seaborn numpy jupyter
 
+# For Google Cloud Storage support (optional)
+pip install google-cloud-storage
+
 # Launch Jupyter Notebook
 jupyter notebook notebooks/smh.ipynb
 ```
 
 ### Spark Configuration
 
+#### Local Development
+
 ```python
-# Initialize Spark Session
+# Initialize Spark Session for local development
 spark = SparkSession.builder \
     .appName("StudentMentalHealthPrediction") \
     .config("spark.sql.adaptive.enabled", "true") \
     .config("spark.sql.adaptive.coalescePartitions.enabled", "true") \
     .getOrCreate()
 ```
+
+#### Google Cloud Storage Configuration
+
+```python
+# Initialize Spark Session with GCS support
+spark = SparkSession.builder \
+    .appName("StudentMentalHealthPrediction") \
+    .config("spark.jars.packages", "com.google.cloud.bigdataoss:gcs-connector:hadoop3-2.2.20") \
+    .config("spark.hadoop.fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem") \
+    .config("spark.hadoop.fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS") \
+    .config("spark.hadoop.google.cloud.auth.type", "APPLICATION_DEFAULT_CREDENTIALS") \
+    .getOrCreate()
+```
+
+### Google Cloud Storage Setup
+
+#### Prerequisites for GCS
+
+1. **Google Cloud Account**: Create a Google Cloud Platform account
+2. **Authentication**: Set up application default credentials
+3. **Bucket Creation**: Create a GCS bucket for your data
+
+#### Authentication Setup
+
+```bash
+# Install Google Cloud CLI
+curl https://sdk.cloud.google.com | bash
+exec -l $SHELL
+
+# Authenticate with Google Cloud
+gcloud auth application-default login
+
+# Set your project ID
+gcloud config set project YOUR_PROJECT_ID
+```
+
+#### Data Loading Options
+
+The project supports **flexible data loading** with a simple configuration switch:
+
+```python
+# Configuration switch in the notebook
+USE_GCS = True  # Set to True for Google Cloud Storage
+USE_GCS = False # Set to False for local files
+
+# Automatic path resolution
+if USE_GCS:
+    bucket_name = "your-bucket-name"
+    base_path = f'gs://{bucket_name}/'
+    print(f"✅ Reading data from Google Cloud Storage bucket: {bucket_name}")
+else:
+    base_path = "../data/"
+    print("✅ Reading data from local '../data/' directory.")
+```
+
+#### Benefits of Google Cloud Storage Integration
+
+- **Scalability**: Handle datasets of any size without local storage constraints
+- **Collaboration**: Share data across team members and environments
+- **Performance**: Optimized data access for distributed computing
+- **Cost-Effective**: Pay only for storage and compute resources used
+- **Security**: Enterprise-grade security and access controls
+
+#### Troubleshooting GCS Issues
+
+If you encounter issues with Google Cloud Storage integration:
+
+1. **Authentication Errors**:
+
+   ```bash
+   # Re-authenticate with Google Cloud
+   gcloud auth application-default login
+   ```
+
+2. **Bucket Access Issues**:
+
+   - Verify bucket name is correct
+   - Check bucket permissions
+   - Ensure files exist in the bucket
+
+3. **Connection Timeouts**:
+
+   - Check internet connectivity
+   - Verify firewall settings
+   - Review Google Cloud quotas
+
+4. **File Not Found Errors**:
+   - Confirm file paths in bucket
+   - Check file naming conventions
+   - Verify file uploads completed successfully
 
 ## 📈 Performance Metrics
 
@@ -240,14 +336,33 @@ Our analysis revealed a **stark correlation** between stress levels and depressi
 ```
 SMH/
 ├── notebooks/
-│   └── smh.ipynb          # Main analysis notebook
-├── data/
+│   └── smh.ipynb          # Main analysis notebook with GCS integration
+├── data/                  # Local data storage (optional)
 │   ├── student_info.csv   # Demographic data
 │   ├── academic_data.csv  # Academic performance
 │   ├── lifestyle_data.csv # Lifestyle factors
 │   └── mental_health.csv  # Mental health outcomes
 ├── PROJECT_STRUCTURE.md   # Development guidelines
+├── requirements.txt       # Python dependencies
 └── README.md             # This file
+```
+
+### Data Storage Options
+
+The project supports **dual data storage modes**:
+
+1. **Local Storage**: Traditional file-based approach using the `data/` directory
+2. **Google Cloud Storage**: Cloud-based storage for scalable data access
+3. **Hybrid Mode**: Seamlessly switch between local and cloud storage
+
+#### Data Loading Configuration
+
+The notebook includes a **configuration switch** that automatically handles data source selection:
+
+```python
+# Simple toggle for data source
+USE_GCS = False  # Use local files
+USE_GCS = True   # Use Google Cloud Storage
 ```
 
 ### Key Algorithms Implemented
