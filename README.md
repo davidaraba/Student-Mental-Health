@@ -65,8 +65,8 @@ This project utilizes the **Student Depression Dataset** from Kaggle, a comprehe
 
 Our comprehensive dataset includes **27,901 student records** across four integrated data sources:
 
-| Dataset            | Records | Key Features                                         | Sample Variables                                       |
-| ------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| Dataset                  | Records | Key Features                                         | Sample Variables                                       |
+| ------------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
 | **Student Info**   | 27,901  | Demographics, Location, Academic Level               | Gender, Age, City, Profession, Degree                  |
 | **Academic Data**  | 27,901  | CGPA, Academic Pressure, Study Satisfaction          | CGPA, Academic Pressure, Work/Study Hours              |
 | **Lifestyle Data** | 27,901  | Sleep Patterns, Diet, Financial Stress               | Sleep Duration, Dietary Habits, Financial Stress       |
@@ -171,6 +171,123 @@ pip install google-cloud-storage
 jupyter notebook notebooks/smh.ipynb
 ```
 
+## 🛠️ Setup on Google Cloud VM (for Demonstration)
+
+These instructions detail how to set up the Google Cloud Platform (GCP) environment used for developing and demonstrating this project, ensuring reproducibility as requested by the course marking criteria.
+
+### 1. Create the Compute Engine VM Instance
+
+Create a VM instance in the GCP Console with the following specifications:
+
+- **Name:** `infs3208-smh` (or similar)
+- **Region:** `australia-southeast1` (Sydney)
+- **Machine type:** Series **E2**, type **e2-standard-4** (4 vCPUs, 16 GB memory)
+- **Boot disk:** OS **Debian 11 (bullseye)**, Size **30 GB**
+- **Firewall:** Allow **HTTP** and **HTTPS** traffic
+- **Access Scopes (IMPORTANT):** Set to **"Allow full access to all Cloud APIs"**. This grants the VM the necessary permissions to interact with other GCP services like Cloud Storage.
+
+### 2. Connect via SSH and Install Software
+
+Connect to the newly created VM via the browser SSH provided in the GCP console and run the following commands:
+
+```bash
+# Update package lists
+sudo apt-get update
+
+# Download and install Miniconda (Python environment manager)
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
+
+# Install Git (version control)
+sudo apt-get install git -y
+
+# Install Java 17 (Required by Spark 4.x)
+sudo apt-get install -y openjdk-17-jdk
+
+# IMPORTANT: Close and reopen the SSH terminal window now
+# This ensures the new PATH for conda is recognized in the next steps.
+```
+
+### 3. Initialize Conda and Set JAVA_HOME
+
+After reopening the SSH terminal, initialize Conda and permanently set the `JAVA_HOME` environment variable:
+
+```bash
+# Initialize Conda for the bash shell
+~/miniconda/bin/conda init bash
+
+# Add JAVA_HOME setting to the bash startup file
+echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64' >> ~/.bashrc
+
+# IMPORTANT: Close and reopen the SSH terminal window again
+# This ensures the .bashrc changes (conda init and JAVA_HOME) take effect.
+```
+
+### 4. Clone Project and Set Up Environment
+
+Navigate to your home directory, clone the project repository, and create the Conda environment using the provided `requirements.txt` file:
+
+```bash
+# Go to home directory (if not already there)
+cd ~
+
+# Clone the repository
+git clone https://github.com/davidaraba/Student-Mental-Health.git
+
+# Navigate into the project directory
+cd Student-Mental-Health
+
+# Accept Conda Terms of Service (run these two commands)
+conda config --set channel_priority strict
+conda config --append channels conda-forge
+conda config --set experimental_solver libmamba
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
+
+# Create the Conda environment
+conda create -n smh python=3.10 -y
+
+# Activate the environment
+conda activate smh
+
+# Install all required packages
+pip install -r requirements.txt
+```
+
+### 5. Configure Git Identity (One-Time Setup)
+
+Configure Git with your name and email for making commits:
+
+```bash
+git config --global user.name "[Your Name]"
+git config --global user.email "[Your Email]"
+```
+
+### 6. Grant Storage Permissions (Troubleshooting Step)
+
+If you encounter permission errors (HTTP 403) when the notebook tries to read from GCS, explicitly grant the VM's service account the necessary role on your bucket:
+
+1. Find the VM's service account email (e.g., `NUMBER-compute@developer.gserviceaccount.com`) on the VM details page in the GCP Console.
+2. Go to your GCS bucket (`david-araba-infs3208-data`) -> **Permissions** tab -> **Grant Access**.
+3. Add the service account email as a **New principal**.
+4. Assign the role **`Cloud Storage` -> `Storage Object Viewer`**.
+5. Save and wait ~2 minutes for permissions to propagate.
+
+### 7. Run Jupyter Notebook
+
+Finally, start the Jupyter Notebook server:
+
+```bash
+# Ensure you are in the project directory (~/Student-Mental-Health)
+# Ensure the (smh) environment is active
+
+jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser
+```
+
+Access the notebook from your local browser using the VM's **External IP** address and the **token** provided in the terminal output (e.g., `http://<VM_EXTERNAL_IP>:8888/?token=...`). Set `USE_GCS = True` in the notebook to run using cloud data for the demonstration.
+
 ### Spark Configuration
 
 #### Local Development
@@ -256,20 +373,18 @@ If you encounter issues with Google Cloud Storage integration:
    # Re-authenticate with Google Cloud
    gcloud auth application-default login
    ```
-
 2. **Bucket Access Issues**:
 
    - Verify bucket name is correct
    - Check bucket permissions
    - Ensure files exist in the bucket
-
 3. **Connection Timeouts**:
 
    - Check internet connectivity
    - Verify firewall settings
    - Review Google Cloud quotas
-
 4. **File Not Found Errors**:
+
    - Confirm file paths in bucket
    - Check file naming conventions
    - Verify file uploads completed successfully
@@ -278,12 +393,12 @@ If you encounter issues with Google Cloud Storage integration:
 
 ### Model Performance Summary
 
-| Model                   | Metric     | Score  | Interpretation                   |
-| ----------------------- | ---------- | ------ | -------------------------------- |
+| Model                         | Metric     | Score  | Interpretation                   |
+| ----------------------------- | ---------- | ------ | -------------------------------- |
 | **Logistic Regression** | AUC-ROC    | 92.30% | Excellent discriminative ability |
 | **Logistic Regression** | Recall     | 88.24% | Minimal false negatives          |
 | **Logistic Regression** | F1-Score   | 86.69% | Well-balanced performance        |
-| **Linear Regression**   | R²         | 1.68%  | Poor CGPA predictability         |
+| **Linear Regression**   | R²        | 1.68%  | Poor CGPA predictability         |
 | **K-Means**             | Silhouette | 0.349  | Fair cluster separation          |
 
 ### Scalability Benchmarks
