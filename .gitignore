@@ -143,3 +143,6 @@ tmp/
 spark-warehouse/
 metastore_db/
 derby.log
+
+# Extras 
+Project_Structure.md
