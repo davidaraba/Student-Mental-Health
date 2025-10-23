@@ -65,8 +65,8 @@ This project utilizes the **Student Depression Dataset** from Kaggle, a comprehe
 
 Our comprehensive dataset includes **27,901 student records** across four integrated data sources:
 
-| Dataset                  | Records | Key Features                                         | Sample Variables                                       |
-| ------------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| Dataset            | Records | Key Features                                         | Sample Variables                                       |
+| ------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
 | **Student Info**   | 27,901  | Demographics, Location, Academic Level               | Gender, Age, City, Profession, Degree                  |
 | **Academic Data**  | 27,901  | CGPA, Academic Pressure, Study Satisfaction          | CGPA, Academic Pressure, Work/Study Hours              |
 | **Lifestyle Data** | 27,901  | Sleep Patterns, Diet, Financial Stress               | Sleep Duration, Dietary Habits, Financial Stress       |
@@ -373,16 +373,19 @@ If you encounter issues with Google Cloud Storage integration:
    # Re-authenticate with Google Cloud
    gcloud auth application-default login
    ```
+
 2. **Bucket Access Issues**:
 
    - Verify bucket name is correct
    - Check bucket permissions
    - Ensure files exist in the bucket
+
 3. **Connection Timeouts**:
 
    - Check internet connectivity
    - Verify firewall settings
    - Review Google Cloud quotas
+
 4. **File Not Found Errors**:
 
    - Confirm file paths in bucket
@@ -393,12 +396,12 @@ If you encounter issues with Google Cloud Storage integration:
 
 ### Model Performance Summary
 
-| Model                         | Metric     | Score  | Interpretation                   |
-| ----------------------------- | ---------- | ------ | -------------------------------- |
+| Model                   | Metric     | Score  | Interpretation                   |
+| ----------------------- | ---------- | ------ | -------------------------------- |
 | **Logistic Regression** | AUC-ROC    | 92.30% | Excellent discriminative ability |
 | **Logistic Regression** | Recall     | 88.24% | Minimal false negatives          |
 | **Logistic Regression** | F1-Score   | 86.69% | Well-balanced performance        |
-| **Linear Regression**   | R²        | 1.68%  | Poor CGPA predictability         |
+| **Linear Regression**   | R²         | 1.68%  | Poor CGPA predictability         |
 | **K-Means**             | Silhouette | 0.349  | Fair cluster separation          |
 
 ### Scalability Benchmarks
@@ -495,6 +498,10 @@ This project demonstrates advanced data science and machine learning capabilitie
 - **Feature Engineering**: Novel feature extraction techniques
 - **Visualization**: Interactive dashboards and reporting
 - **Deployment**: Production-ready applications
+
+## 🤖 AI Disclosure
+
+This project was completed with the assistance of artificial intelligence tools for code review, grammar enhancement, conceptual understanding, and result interpretation. For full transparency, please see the [AI_DISCLOSURE.md](AI_DISCLOSURE.md) file for detailed information about AI tool usage throughout the project development process.
 
 ## 📄 License
 
