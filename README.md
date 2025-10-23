@@ -65,8 +65,8 @@ This project utilizes the **Student Depression Dataset** from Kaggle, a comprehe
 
 Our comprehensive dataset includes **27,901 student records** across four integrated data sources:
 
-| Dataset            | Records | Key Features                                         | Sample Variables                                       |
-| ------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| Dataset                  | Records | Key Features                                         | Sample Variables                                       |
+| ------------------------ | ------- | ---------------------------------------------------- | ------------------------------------------------------ |
 | **Student Info**   | 27,901  | Demographics, Location, Academic Level               | Gender, Age, City, Profession, Degree                  |
 | **Academic Data**  | 27,901  | CGPA, Academic Pressure, Study Satisfaction          | CGPA, Academic Pressure, Work/Study Hours              |
 | **Lifestyle Data** | 27,901  | Sleep Patterns, Diet, Financial Stress               | Sleep Duration, Dietary Habits, Financial Stress       |
@@ -373,19 +373,16 @@ If you encounter issues with Google Cloud Storage integration:
    # Re-authenticate with Google Cloud
    gcloud auth application-default login
    ```
-
 2. **Bucket Access Issues**:
 
    - Verify bucket name is correct
    - Check bucket permissions
    - Ensure files exist in the bucket
-
 3. **Connection Timeouts**:
 
    - Check internet connectivity
    - Verify firewall settings
    - Review Google Cloud quotas
-
 4. **File Not Found Errors**:
 
    - Confirm file paths in bucket
@@ -396,12 +393,12 @@ If you encounter issues with Google Cloud Storage integration:
 
 ### Model Performance Summary
 
-| Model                   | Metric     | Score  | Interpretation                   |
-| ----------------------- | ---------- | ------ | -------------------------------- |
+| Model                         | Metric     | Score  | Interpretation                   |
+| ----------------------------- | ---------- | ------ | -------------------------------- |
 | **Logistic Regression** | AUC-ROC    | 92.30% | Excellent discriminative ability |
 | **Logistic Regression** | Recall     | 88.24% | Minimal false negatives          |
 | **Logistic Regression** | F1-Score   | 86.69% | Well-balanced performance        |
-| **Linear Regression**   | R²         | 1.68%  | Poor CGPA predictability         |
+| **Linear Regression**   | R²        | 1.68%  | Poor CGPA predictability         |
 | **K-Means**             | Silhouette | 0.349  | Fair cluster separation          |
 
 ### Scalability Benchmarks
@@ -454,15 +451,18 @@ Our analysis revealed a **stark correlation** between stress levels and depressi
 ```
 SMH/
 ├── notebooks/
-│   └── smh.ipynb          # Main analysis notebook with GCS integration
-├── data/                  # Local data storage (optional)
-│   ├── student_info.csv   # Demographic data
-│   ├── academic_data.csv  # Academic performance
-│   ├── lifestyle_data.csv # Lifestyle factors
-│   └── mental_health.csv  # Mental health outcomes
-├── PROJECT_STRUCTURE.md   # Development guidelines
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+│   └── smh.ipynb                        # Main analysis notebook with GCS integration
+├── data/                                # Local data storage (optional)
+│   ├── student_info.csv                 # Demographic data
+│   ├── academic_data.csv                # Academic performance
+│   ├── lifestyle_data.csv               # Lifestyle factors
+│   ├── mental_health.csv                # Mental health outcomes
+│   └── student_depression_dataset.csv   # Additional dataset for depression analysis
+├── .gitignore
+├── AI_DISCLOSURE.md                     # AI usage and transparency statement
+├── PROJECT_STRUCTURE.md                 # Development guidelines
+├── requirements.txt                     # Python dependencies
+└── README.md                            # Project overview and usage
 ```
 
 ### Data Storage Options
