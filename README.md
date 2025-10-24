@@ -33,7 +33,7 @@ This project demonstrates how **big data technologies** can transform reactive m
 
 ### System Design
 
-```
+```text
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Data Sources  │    │  Cloud Storage  │    │  Apache Spark   │    │  ML Pipeline    │
 │                 │    │                 │    │                 │    │                 │
@@ -373,6 +373,7 @@ If you encounter issues with Google Cloud Storage integration:
    # Re-authenticate with Google Cloud
    gcloud auth application-default login
    ```
+
 2. **Bucket Access Issues**:
 
    - Verify bucket name is correct
@@ -448,7 +449,7 @@ Our analysis revealed a **stark correlation** between stress levels and depressi
 
 ### Code Structure
 
-```
+```text
 SMH/
 ├── notebooks/
 │   └── smh.ipynb                        # Main analysis notebook with GCS integration
@@ -509,7 +510,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨🏾‍💻 Author
 
-**David Araba**
+David Araba
 
 - **Student ID**: 48093143
 - **Course**: INFS3208 - Cloud Computing
