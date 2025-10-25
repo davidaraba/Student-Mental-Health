@@ -504,10 +504,6 @@ This project demonstrates advanced data science and machine learning capabilitie
 
 This project was completed with the assistance of artificial intelligence tools for code review, grammar enhancement, conceptual understanding, and result interpretation. For full transparency, please see the [AI_DISCLOSURE.md](AI_DISCLOSURE.md) file for detailed information about AI tool usage throughout the project development process.
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 👨🏾‍💻 Author
 
 David Araba
